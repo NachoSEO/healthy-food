@@ -1,6 +1,6 @@
 ---
 name: compra-mercadona-menu
-description: Compra asistida en Mercadona a partir de un menú. Genera la lista de la compra desde un menú semanal, busca los productos en el catálogo de Mercadona (almacén del usuario), analiza cada uno con el motor de aditivos/NOVA/Nutri-Score, sustituye automáticamente los que salen 🔴/🟠 por alternativas más limpias, y los añade al carrito real del usuario. Úsala cuando el usuario quiera "hazme la compra del menú", "monta el carrito de Mercadona con estos platos", "compra asistida". Requiere sesión de Mercadona abierta (Playwright MCP). Reutiliza el motor de la skill analizar-carro-mercadona.
+description: Compra asistida y genérica en Mercadona a partir de un menú. PREGUNTA PRIMERO por los comensales (adultos/niños), qué comidas cubrir, duración y exclusiones; con eso escala las cantidades. Busca los productos en el catálogo del almacén del usuario, analiza cada uno con el motor de aditivos/NOVA/Nutri-Score, sustituye automáticamente los que salen 🔴/🟠 por alternativas más limpias y los añade al carrito real. Úsala cuando el usuario quiera "hazme la compra del menú", "monta el carrito de Mercadona", "compra asistida". Requiere sesión de Mercadona abierta (Playwright MCP). Reutiliza el motor de la skill analizar-carro-mercadona.
 ---
 
 # Compra asistida de Mercadona desde un menú
@@ -17,6 +17,19 @@ cambiando por alternativas más limpias lo problemático. **Es un superconjunto 
 
 ## Flujo
 
+### 0. Preguntar SIEMPRE antes de nada (parámetros de la compra)
+Nunca asumas comensales ni raciones. Usa **AskUserQuestion** para recoger, como mínimo:
+- **¿Para cuántos?** nº de **adultos** y nº de **niños** (y edad aprox., que come menos ración).
+- **¿Qué comidas cubrir?** desayuno / comida / merienda / cena, y en qué días (p. ej. el niño solo cena
+  entre semana; alguien come de tupper en el trabajo…).
+- **¿Cuántos días / semanas?** (1 semana, 2 semanas…).
+- **¿Exclusiones?** qué NO comprar en Mercadona (p. ej. fruta o verdura que compran en la frutería),
+  alergias/intolerancias, alimentos que no gustan, dieta (mediterránea, veggie…).
+- **¿Presupuesto o marca?** opcional (p. ej. preferir Hacendado, o marcas concretas).
+
+Guarda estos parámetros; **de ellos salen las cantidades** (ver paso 3). Si el usuario ya ha dado el
+menú y los comensales, no vuelvas a preguntar lo que ya sabes.
+
 ### 1. Confirmar sesión y almacén
 `browser_evaluate`: leer `MO-user.token` y el almacén efectivo. El almacén va en TODAS las
 llamadas como `?wh=<almacen>` (p. ej. `bcn1`). Sin el `wh` correcto, las fichas de producto dan 404.
@@ -27,7 +40,16 @@ Recorre las categorías de alimentación con `GET /api/categories/{id}/?lang=es&
 el navegador headless, por eso se navega por categorías.
 
 ### 3. Traducir el menú a lista de la compra
-Deriva ingredientes + **cantidades** del menú. Empareja cada ítem con el catálogo por palabras clave
+Deriva ingredientes + **cantidades** del menú **escaladas a los comensales del paso 0**. No uses
+números fijos; calcula raciones:
+- **Raciones por comida** = `adultos + Σ(factor_niño)`, con `factor_niño ≈ 0,5` (3-6 años) a `0,75`
+  (7-12). Aplica solo a las comidas/días que el usuario dijo cubrir (p. ej. si el niño solo cena entre
+  semana, cuéntalo únicamente en esas cenas).
+- **Nº de comidas** = días × comidas cubiertas. De ahí salen las raciones totales de cada tipo de plato
+  (legumbre, pescado, carne, huevo…) y, con el tamaño de ración estándar, las **unidades a comprar**.
+- Redondea al formato de venta y ajusta a la despensa (AOVE, sal, especias duran varias compras → 1 ud.).
+
+Empareja cada ítem con el catálogo por palabras clave
 (prioriza marca Hacendado y variantes simples). Revisa los emparejamientos: el matcher confunde
 "tomate"→"mermelada de tomate", "sal"→"sardinillas en sal", "calabacín"→"crema de calabacín", etc.
 **Verifica cada línea por nombre antes de continuar.**
