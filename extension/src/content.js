@@ -26,7 +26,7 @@
     statusTimer = setTimeout(() => {
       statusTimer = null;
       console.log('%c🚦 Semáforo Sano', 'font-weight:bold;color:#2f9e63',
-        '· ' + marked + ' productos marcados · ' + detailCache.size + ' fichas analizadas · almacén ' + warehouse());
+        '· ' + marked + ' productos marcados · ' + detailCache.size + ' fichas analizadas · almacén ' + (getWh() || '?'));
     }, 400);
   }
 
@@ -66,14 +66,17 @@
     return { additives: adds, color: color, label: label };
   }
 
-  function warehouse() {
-    try { return (JSON.parse(localStorage.getItem('__mo_da') || '{}').warehouse) || 'mad1'; }
-    catch (e) { return 'mad1'; }
+  let sniffedWh = null; // almacén detectado de las peticiones de la propia web (fiable)
+  function getWh() {
+    if (sniffedWh) return sniffedWh;
+    try { const w = JSON.parse(localStorage.getItem('__mo_da') || '{}').warehouse; if (w) return w; }
+    catch (e) { /* noop */ }
+    return null; // aún no conocido: no pedimos fichas hasta saberlo (evita 404 con almacén erróneo)
   }
 
   function getDetail(id) {
     if (detailCache.has(id)) return detailCache.get(id);
-    const pr = fetch('/api/products/' + id + '/?lang=es&wh=' + warehouse(), { credentials: 'include' })
+    const pr = fetch('/api/products/' + id + '/?lang=es&wh=' + getWh(), { credentials: 'include' })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (!d) return null;
@@ -189,12 +192,13 @@
   let scanTimer = null;
   function scheduleScan() {
     if (scanTimer) return;
-    scanTimer = setTimeout(() => { scanTimer = null; if (ready) { scanCards(); scanDetailPage(); } }, 120);
+    scanTimer = setTimeout(() => { scanTimer = null; if (ready && getWh()) { scanCards(); scanDetailPage(); } }, 120);
   }
 
   // ---------- mensajes del hook (mundo principal) ----------
   window.addEventListener('message', (ev) => {
     if (ev.source !== window || !ev.data || !ev.data.__mdnaSem) return;
+    if (ev.data.wh) sniffedWh = ev.data.wh;
     const ps = ev.data.products || [];
     for (let i = 0; i < ps.length; i++) {
       const p = ps[i];
@@ -212,7 +216,7 @@
       KW = cfg.palabras_clave || {};
       ready = true;
       console.log('%c🚦 Semáforo Sano activo', 'font-weight:bold;color:#2f9e63',
-        '· ' + Object.keys(DB).length + ' aditivos cargados · almacén ' + warehouse() + ' · navega por una categoría y pasa el ratón por los puntos');
+        '· ' + Object.keys(DB).length + ' aditivos cargados · almacén ' + (getWh() || 'detectando…') + ' · navega por una categoría y pasa el ratón por los puntos');
       const mo = new MutationObserver(scheduleScan);
       mo.observe(document.documentElement, { childList: true, subtree: true });
       scheduleScan();

@@ -13,6 +13,9 @@
     try {
       const url = typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url);
       if (url && url.indexOf('/api/') >= 0) {
+        // Detecta el almacén (wh) que usa la propia web y avísalo al content script.
+        const whm = /[?&]wh=([a-z0-9]+)/i.exec(url);
+        if (whm) window.postMessage({ __mdnaSem: 1, wh: whm[1] }, '*');
         p.then((res) => {
           res.clone().json().then((data) => {
             const acc = [];
