@@ -27,8 +27,18 @@ Nunca asumas comensales ni raciones. Usa **AskUserQuestion** para recoger, como 
   alergias/intolerancias, alimentos que no gustan, dieta (mediterránea, veggie…).
 - **¿Presupuesto o marca?** opcional (p. ej. preferir Hacendado, o marcas concretas).
 
-Guarda estos parámetros; **de ellos salen las cantidades** (ver paso 3). Si el usuario ya ha dado el
-menú y los comensales, no vuelvas a preguntar lo que ya sabes.
+Guarda estos parámetros; **de ellos salen tanto el menú (paso 0b) como las cantidades (paso 3)**. Si el
+usuario ya ha dado el menú y los comensales, no vuelvas a preguntar lo que ya sabes.
+
+### 0b. Generar el menú (si el usuario no lo aporta)
+Si no hay menú previo, genera uno **usando los MISMOS parámetros del paso 0** (comensales, comidas y días
+cubiertos, duración, exclusiones y dieta). Reglas:
+- Dimensiona las raciones de cada plato al nº de comensales de cada comida (el niño solo cuenta en las
+  comidas/días que le corresponden). Así el menú y la compra usan la misma base y **las cantidades cuadran**.
+- Respeta las exclusiones (p. ej. no planifiques comprar fruta si va aparte), la dieta y lo que no gusta.
+- Adapta a temporada y contexto (verano → platos fríos/ensaladas/tupper; invierno → guisos/cremas calientes).
+- **Muestra el menú y espera validación del usuario** antes de comprar. Ofrece ajustes (platos, nº de
+  pescado/legumbre, batch-cooking del finde…). No sigas al carrito hasta el OK.
 
 ### 1. Confirmar sesión y almacén
 `browser_evaluate`: leer `MO-user.token` y el almacén efectivo. El almacén va en TODAS las
