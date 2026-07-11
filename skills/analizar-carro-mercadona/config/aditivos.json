@@ -1,0 +1,1172 @@
+{
+  "_doc": "Base de aditivos con nivel de riesgo y efectos de salud, al estilo Yuka. Fuentes: EFSA, ANSES, IARC (OMS), estudios citados. 'riesgo': elevado|moderado|limitado|ninguno. La skill usa 'riesgo' para el semáforo y muestra 'efectos'+'fuente'. EDITABLE por el usuario. Aviso: informativo, no es consejo médico; los niveles de evidencia varían.",
+  "escala_riesgo": {
+    "elevado": "🔴 Evidencia seria de daño o prohibido por reguladores. Marca el producto en ROJO.",
+    "moderado": "🟠 Sospecha razonable con estudios; controversia. Marca en ÁMBAR-ALTO.",
+    "limitado": "🟡 Riesgo menor o solo en consumo alto / poblaciones sensibles. Marca en ÁMBAR.",
+    "ninguno": "🟢 Sin riesgo conocido / origen natural. No penaliza."
+  },
+  "aditivos": {
+    "E171": {
+      "nombre": "Dióxido de titanio",
+      "tipo": "colorante blanco",
+      "riesgo": "elevado",
+      "efectos": "Genotoxicidad: EFSA (2021) no pudo descartar daño en el ADN. Prohibido como aditivo alimentario en la UE desde 2022.",
+      "fuente": "EFSA 2021; Reglamento UE 2022/63"
+    },
+    "E250": {
+      "nombre": "Nitrito sódico",
+      "tipo": "conservante cárnico",
+      "riesgo": "elevado",
+      "efectos": "En carnes forma nitrosaminas, compuestos cancerígenos (cáncer colorrectal). La carne procesada es Grupo 1 (cancerígeno para humanos) según IARC.",
+      "fuente": "IARC 2015; EFSA 2017"
+    },
+    "E249": {
+      "nombre": "Nitrito potásico",
+      "tipo": "conservante cárnico",
+      "riesgo": "elevado",
+      "efectos": "Igual que E250: precursor de nitrosaminas cancerígenas en carnes procesadas.",
+      "fuente": "IARC 2015; ANSES 2022"
+    },
+    "E251": {
+      "nombre": "Nitrato sódico",
+      "tipo": "conservante cárnico",
+      "riesgo": "elevado",
+      "efectos": "Se reduce a nitritos → nitrosaminas. ANSES (2022) confirmó asociación con cáncer colorrectal.",
+      "fuente": "ANSES 2022; IARC 2A"
+    },
+    "E252": {
+      "nombre": "Nitrato potásico",
+      "tipo": "conservante cárnico",
+      "riesgo": "elevado",
+      "efectos": "Como E251: vía nitrosaminas, riesgo de cáncer colorrectal.",
+      "fuente": "ANSES 2022"
+    },
+    "E102": {
+      "nombre": "Tartrazina",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Asociado a hiperactividad y déficit de atención en niños (estudio Southampton, McCann 2007). Reacciones alérgicas/asma. La UE obliga a advertirlo en la etiqueta.",
+      "fuente": "McCann 2007; Reglamento UE 1333/2008"
+    },
+    "E104": {
+      "nombre": "Amarillo de quinoleína",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Vinculado a hiperactividad infantil (estudio Southampton). Advertencia obligatoria en la UE.",
+      "fuente": "McCann 2007"
+    },
+    "E110": {
+      "nombre": "Amarillo ocaso FCF",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Hiperactividad infantil (Southampton); reacciones alérgicas. Advertencia obligatoria en la UE.",
+      "fuente": "McCann 2007"
+    },
+    "E122": {
+      "nombre": "Azorrubina / Carmoisina",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Hiperactividad infantil (Southampton); posible efecto alérgico. Advertencia obligatoria UE.",
+      "fuente": "McCann 2007"
+    },
+    "E124": {
+      "nombre": "Rojo cochinilla / Ponceau 4R",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Hiperactividad infantil (Southampton). Prohibido en EE.UU. Advertencia obligatoria en la UE.",
+      "fuente": "McCann 2007; FDA"
+    },
+    "E129": {
+      "nombre": "Rojo Allura AC",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Hiperactividad infantil (Southampton). Estudio 2022 (Nature Comms) lo asoció a inflamación intestinal (colitis) en ratones.",
+      "fuente": "McCann 2007; Kwon 2022"
+    },
+    "E131": {
+      "nombre": "Azul patentado V",
+      "tipo": "colorante artificial",
+      "riesgo": "moderado",
+      "efectos": "Reacciones alérgicas; datos toxicológicos limitados.",
+      "fuente": "EFSA 2013"
+    },
+    "E133": {
+      "nombre": "Azul brillante FCF",
+      "tipo": "colorante artificial",
+      "riesgo": "moderado",
+      "efectos": "Posibles reacciones alérgicas; absorción intestinal en debate.",
+      "fuente": "EFSA 2010"
+    },
+    "E320": {
+      "nombre": "BHA (butilhidroxianisol)",
+      "tipo": "antioxidante sintético",
+      "riesgo": "elevado",
+      "efectos": "Clasificado 2B (posible cancerígeno) por IARC. Sospechoso de ser disruptor endocrino.",
+      "fuente": "IARC 2B; ANSES"
+    },
+    "E321": {
+      "nombre": "BHT (butilhidroxitolueno)",
+      "tipo": "antioxidante sintético",
+      "riesgo": "moderado",
+      "efectos": "Sospecha de efecto disruptor endocrino y tumoral en estudios animales; evidencia en humanos no concluyente.",
+      "fuente": "EFSA 2012"
+    },
+    "E621": {
+      "nombre": "Glutamato monosódico (MSG)",
+      "tipo": "potenciador del sabor",
+      "riesgo": "moderado",
+      "efectos": "A dosis altas: cefaleas y malestar en personas sensibles. EFSA (2017) rebajó la ingesta diaria admisible. Debate sobre apetito/obesidad.",
+      "fuente": "EFSA 2017"
+    },
+    "E951": {
+      "nombre": "Aspartamo",
+      "tipo": "edulcorante intenso",
+      "riesgo": "moderado",
+      "efectos": "IARC (2023) lo clasificó como 'posiblemente cancerígeno' (2B). No apto para fenilcetonúricos. JECFA mantiene la IDA en 40 mg/kg.",
+      "fuente": "IARC/JECFA 2023"
+    },
+    "E952": {
+      "nombre": "Ciclamato",
+      "tipo": "edulcorante intenso",
+      "riesgo": "moderado",
+      "efectos": "Prohibido en EE.UU. desde 1970 por indicios de cáncer de vejiga en animales; permitido en la UE con límites.",
+      "fuente": "FDA; EFSA"
+    },
+    "E954": {
+      "nombre": "Sacarina",
+      "tipo": "edulcorante intenso",
+      "riesgo": "moderado",
+      "efectos": "Cáncer de vejiga en ratas en estudios antiguos (no confirmado en humanos). Posible alteración de la microbiota y glucosa.",
+      "fuente": "Suez 2014"
+    },
+    "E955": {
+      "nombre": "Sucralosa",
+      "tipo": "edulcorante intenso",
+      "riesgo": "moderado",
+      "efectos": "Estudio 2023 sugiere que su derivado (sucralosa-6-acetato) puede ser genotóxico (daño ADN). Posible efecto sobre la microbiota.",
+      "fuente": "Schiffman 2023"
+    },
+    "E950": {
+      "nombre": "Acesulfamo K",
+      "tipo": "edulcorante intenso",
+      "riesgo": "limitado",
+      "efectos": "Debate sobre efectos en la microbiota y metabolismo de la glucosa; evidencia limitada.",
+      "fuente": "EFSA"
+    },
+    "E407": {
+      "nombre": "Carragenanos",
+      "tipo": "espesante/gelificante",
+      "riesgo": "elevado",
+      "efectos": "Estudios animales lo asocian a inflamación intestinal y alteración de la microbiota; relevante en digestiones sensibles. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Tobacman; EFSA 2018"
+    },
+    "E211": {
+      "nombre": "Benzoato sódico",
+      "tipo": "conservante",
+      "riesgo": "limitado",
+      "efectos": "Junto a vitamina C (E300) puede formar benceno (cancerígeno) en bebidas. Posibles reacciones alérgicas.",
+      "fuente": "EFSA; FDA"
+    },
+    "E220": {
+      "nombre": "Dióxido de azufre",
+      "tipo": "conservante (sulfito)",
+      "riesgo": "limitado",
+      "efectos": "Alérgeno de declaración obligatoria; desencadena asma y reacciones en personas sensibles.",
+      "fuente": "EFSA 2016"
+    },
+    "E223": {
+      "nombre": "Metabisulfito sódico",
+      "tipo": "conservante (sulfito)",
+      "riesgo": "limitado",
+      "efectos": "Sulfito: asma y reacciones alérgicas en sensibles.",
+      "fuente": "EFSA 2016"
+    },
+    "E450": {
+      "nombre": "Difosfatos",
+      "tipo": "estabilizante (fosfato)",
+      "riesgo": "limitado",
+      "efectos": "Consumo alto de fosfatos se asocia a riesgo cardiovascular y sobrecarga renal; especialmente relevante en enfermedad renal crónica.",
+      "fuente": "EFSA 2019"
+    },
+    "E451": {
+      "nombre": "Trifosfatos",
+      "tipo": "estabilizante (fosfato)",
+      "riesgo": "limitado",
+      "efectos": "Como E450: fósforo añadido, carga renal y cardiovascular en consumo elevado.",
+      "fuente": "EFSA 2019"
+    },
+    "E452": {
+      "nombre": "Polifosfatos",
+      "tipo": "estabilizante (fosfato)",
+      "riesgo": "limitado",
+      "efectos": "Como los otros fosfatos: relevante para riñón y corazón en consumo alto.",
+      "fuente": "EFSA 2019"
+    },
+    "E466": {
+      "nombre": "Carboximetilcelulosa (CMC)",
+      "tipo": "espesante/emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente asociado en estudios recientes a alteración de la microbiota e inflamación intestinal. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Chassaing 2015/2022"
+    },
+    "E471": {
+      "nombre": "Mono y diglicéridos de ácidos grasos",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente muy común; algunos estudios sugieren impacto en la microbiota. Puede contener grasas trans según origen. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Chassaing 2015"
+    },
+    "E472e": {
+      "nombre": "Ésteres de mono/diglicéridos",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente; evidencia limitada sobre microbiota. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA 2017"
+    },
+    "E481": {
+      "nombre": "Estearoil-2-lactilato sódico",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente de panadería; riesgo bajo, indicador de ultraprocesado. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA"
+    },
+    "E415": {
+      "nombre": "Goma xantana",
+      "tipo": "espesante",
+      "riesgo": "elevado",
+      "efectos": "Generalmente segura; a dosis altas efecto laxante/flatulencia. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA 2017"
+    },
+    "E150c": {
+      "nombre": "Caramelo amónico",
+      "tipo": "colorante",
+      "riesgo": "limitado",
+      "efectos": "Puede contener 4-MEI, sospechoso de carcinogenicidad en animales a dosis altas.",
+      "fuente": "IARC 2B (4-MEI)"
+    },
+    "E150d": {
+      "nombre": "Caramelo sulfito amónico",
+      "tipo": "colorante",
+      "riesgo": "limitado",
+      "efectos": "Como E150c: posible 4-MEI (típico en refrescos de cola).",
+      "fuente": "IARC 2B (4-MEI)"
+    },
+    "E100": {
+      "nombre": "Curcumina",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Colorante natural (cúrcuma), sin riesgo conocido.",
+      "fuente": "EFSA"
+    },
+    "E101": {
+      "nombre": "Riboflavina (vitamina B2)",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Es una vitamina; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E160a": {
+      "nombre": "Betacaroteno",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Precursor de vitamina A; sin riesgo a dosis alimentarias.",
+      "fuente": "EFSA"
+    },
+    "E160c": {
+      "nombre": "Extracto de pimentón",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Colorante natural, sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E162": {
+      "nombre": "Rojo de remolacha",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Colorante natural, sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E170": {
+      "nombre": "Carbonato cálcico",
+      "tipo": "estabilizante/colorante",
+      "riesgo": "ninguno",
+      "efectos": "Aporta calcio; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E270": {
+      "nombre": "Ácido láctico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Presente de forma natural en lácteos fermentados; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E296": {
+      "nombre": "Ácido málico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Ácido natural de la fruta; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E300": {
+      "nombre": "Ácido ascórbico (vitamina C)",
+      "tipo": "antioxidante",
+      "riesgo": "ninguno",
+      "efectos": "Es vitamina C; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E301": {
+      "nombre": "Ascorbato sódico",
+      "tipo": "antioxidante",
+      "riesgo": "ninguno",
+      "efectos": "Forma de vitamina C; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E306": {
+      "nombre": "Tocoferoles (vitamina E)",
+      "tipo": "antioxidante natural",
+      "riesgo": "ninguno",
+      "efectos": "Vitamina E; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E322": {
+      "nombre": "Lecitinas",
+      "tipo": "emulgente natural",
+      "riesgo": "ninguno",
+      "efectos": "Emulgente natural (soja/girasol); sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E325": {
+      "nombre": "Lactato sódico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Sal del ácido láctico; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E330": {
+      "nombre": "Ácido cítrico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Ácido natural (cítricos); sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E331": {
+      "nombre": "Citratos de sodio",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Sin riesgo conocido.",
+      "fuente": "EFSA"
+    },
+    "E392": {
+      "nombre": "Extracto de romero",
+      "tipo": "antioxidante natural",
+      "riesgo": "ninguno",
+      "efectos": "Antioxidante de origen vegetal; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E406": {
+      "nombre": "Agar-agar",
+      "tipo": "gelificante natural",
+      "riesgo": "ninguno",
+      "efectos": "Fibra de alga; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E410": {
+      "nombre": "Goma garrofín",
+      "tipo": "espesante natural",
+      "riesgo": "limitado",
+      "efectos": "Fibra de algarroba; sin riesgo. Yuka lo reclasificó a riesgo limitado (amarillo, 2024) por datos emergentes sobre la microbiota intestinal.",
+      "fuente": "EFSA; Yuka 2024"
+    },
+    "E412": {
+      "nombre": "Goma guar",
+      "tipo": "espesante natural",
+      "riesgo": "limitado",
+      "efectos": "Fibra vegetal; sin riesgo a dosis habituales. Yuka lo reclasificó a riesgo limitado (amarillo, 2024) por datos emergentes sobre la microbiota intestinal.",
+      "fuente": "EFSA; Yuka 2024"
+    },
+    "E414": {
+      "nombre": "Goma arábiga",
+      "tipo": "espesante natural",
+      "riesgo": "limitado",
+      "efectos": "Fibra natural; sin riesgo. Yuka lo reclasificó a riesgo limitado (amarillo, 2024) por datos emergentes sobre la microbiota intestinal.",
+      "fuente": "EFSA; Yuka 2024"
+    },
+    "E440": {
+      "nombre": "Pectina",
+      "tipo": "gelificante natural",
+      "riesgo": "limitado",
+      "efectos": "Fibra natural de la fruta; sin riesgo. Yuka lo reclasificó a riesgo limitado (amarillo, 2024) por datos emergentes sobre la microbiota intestinal.",
+      "fuente": "EFSA; Yuka 2024"
+    },
+    "E500": {
+      "nombre": "Bicarbonato sódico",
+      "tipo": "gasificante",
+      "riesgo": "limitado",
+      "efectos": "Gasificante común; sin riesgo. Yuka lo reclasificó a riesgo limitado (amarillo, 2024) por datos emergentes sobre la microbiota intestinal.",
+      "fuente": "EFSA; Yuka 2024"
+    },
+    "E575": {
+      "nombre": "Glucono-delta-lactona",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Derivado natural de la glucosa; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E960": {
+      "nombre": "Glucósidos de esteviol (estevia)",
+      "tipo": "edulcorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Edulcorante de origen vegetal; sin riesgo dentro de la IDA.",
+      "fuente": "EFSA 2010"
+    },
+    "E120": {
+      "nombre": "Cochinilla / Ácido carmínico",
+      "tipo": "colorante natural (insecto)",
+      "riesgo": "limitado",
+      "efectos": "Alérgeno: reacciones alérgicas y anafilaxia en personas sensibles.",
+      "fuente": "EFSA 2015"
+    },
+    "E123": {
+      "nombre": "Amaranto",
+      "tipo": "colorante azoico",
+      "riesgo": "elevado",
+      "efectos": "Sospechoso de ser cancerígeno, mutágeno y teratógeno; prohibido en EE.UU. Restringido en la UE (solo caviar/aperitivos).",
+      "fuente": "FDA; EFSA 2010"
+    },
+    "E127": {
+      "nombre": "Eritrosina",
+      "tipo": "colorante",
+      "riesgo": "elevado",
+      "efectos": "Alteraciones tiroideas y sospecha de carcinogenicidad (tumores tiroideos en animales). Uso muy restringido.",
+      "fuente": "EFSA 2011; FDA"
+    },
+    "E128": {
+      "nombre": "Rojo 2G",
+      "tipo": "colorante azoico",
+      "riesgo": "elevado",
+      "efectos": "Prohibido en la UE desde 2007: se transforma en anilina, genotóxica y cancerígena.",
+      "fuente": "EFSA 2007"
+    },
+    "E132": {
+      "nombre": "Indigotina / Azul 2",
+      "tipo": "colorante artificial",
+      "riesgo": "moderado",
+      "efectos": "Reacciones alérgicas; Yuka lo reclasificó al alza (2025) por datos toxicológicos.",
+      "fuente": "EFSA; Yuka 2025"
+    },
+    "E142": {
+      "nombre": "Verde ácido brillante / Verde S",
+      "tipo": "colorante artificial",
+      "riesgo": "moderado",
+      "efectos": "Hiperactividad, reacciones cutáneas y asma; sospecha de carcinogenicidad. Prohibido en varios países.",
+      "fuente": "ANSES"
+    },
+    "E143": {
+      "nombre": "Verde sólido FCF / Verde 3",
+      "tipo": "colorante artificial",
+      "riesgo": "elevado",
+      "efectos": "Estudios en animales asocian tumores; Yuka lo reclasificó a rojo (2025).",
+      "fuente": "Yuka 2025; FDA"
+    },
+    "E150A": {
+      "nombre": "Caramelo natural",
+      "tipo": "colorante",
+      "riesgo": "ninguno",
+      "efectos": "Caramelo simple sin tratamiento amónico; sin riesgo conocido.",
+      "fuente": "EFSA 2011"
+    },
+    "E150B": {
+      "nombre": "Caramelo cáustico sulfítico",
+      "tipo": "colorante",
+      "riesgo": "limitado",
+      "efectos": "Riesgo bajo; menos preocupante que las variantes amónicas.",
+      "fuente": "EFSA 2011"
+    },
+    "E151": {
+      "nombre": "Negro brillante BN",
+      "tipo": "colorante artificial",
+      "riesgo": "moderado",
+      "efectos": "Reacciones alérgicas; prohibido en varios países.",
+      "fuente": "EFSA"
+    },
+    "E154": {
+      "nombre": "Marrón FK",
+      "tipo": "colorante azoico",
+      "riesgo": "elevado",
+      "efectos": "Prohibido en la UE: hiperactividad, quistes/degeneración y sospecha cancerígena.",
+      "fuente": "EFSA"
+    },
+    "E155": {
+      "nombre": "Marrón HT",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Hiperactividad, asma, urticaria; sospecha de carcinogenicidad; problemas renales.",
+      "fuente": "ANSES"
+    },
+    "E160B": {
+      "nombre": "Annato / Bixina",
+      "tipo": "colorante natural",
+      "riesgo": "limitado",
+      "efectos": "Origen natural (achiote) pero puede provocar reacciones alérgicas.",
+      "fuente": "EFSA 2016"
+    },
+    "E160D": {
+      "nombre": "Licopeno",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Carotenoide del tomate; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E161B": {
+      "nombre": "Luteína",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Carotenoide natural; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E163": {
+      "nombre": "Antocianinas",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Pigmentos naturales de frutas; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E173": {
+      "nombre": "Aluminio",
+      "tipo": "colorante metálico",
+      "riesgo": "elevado",
+      "efectos": "Neurotóxico (asociación con Alzheimer en debate) y sobrecarga renal; ingesta a limitar.",
+      "fuente": "EFSA 2008"
+    },
+    "E180": {
+      "nombre": "Litolrubina BK",
+      "tipo": "colorante azoico",
+      "riesgo": "moderado",
+      "efectos": "Hiperactividad, reacciones cutáneas; posible carcinogenicidad (usado en cortezas de queso).",
+      "fuente": "EFSA"
+    },
+    "E200": {
+      "nombre": "Ácido sórbico",
+      "tipo": "conservante",
+      "riesgo": "limitado",
+      "efectos": "Generalmente seguro; posibles reacciones cutáneas leves.",
+      "fuente": "EFSA 2015"
+    },
+    "E202": {
+      "nombre": "Sorbato potásico",
+      "tipo": "conservante",
+      "riesgo": "limitado",
+      "efectos": "Conservante común; algún estudio sugiere genotoxicidad leve in vitro a dosis altas; riesgo bajo.",
+      "fuente": "EFSA 2015"
+    },
+    "E203": {
+      "nombre": "Sorbato cálcico",
+      "tipo": "conservante",
+      "riesgo": "moderado",
+      "efectos": "Yuka lo reclasificó a rojo (2025) por datos de genotoxicidad; retirado de la lista UE.",
+      "fuente": "Yuka 2025; EFSA"
+    },
+    "E210": {
+      "nombre": "Ácido benzoico",
+      "tipo": "conservante",
+      "riesgo": "limitado",
+      "efectos": "Con vitamina C puede formar benceno (cancerígeno); reacciones alérgicas/asma.",
+      "fuente": "EFSA 2016"
+    },
+    "E212": {
+      "nombre": "Benzoato potásico",
+      "tipo": "conservante",
+      "riesgo": "limitado",
+      "efectos": "Como el benzoico: posible benceno con vitamina C; reacciones en sensibles.",
+      "fuente": "EFSA 2016"
+    },
+    "E214": {
+      "nombre": "Etilparabeno (PHB)",
+      "tipo": "conservante (parabeno)",
+      "riesgo": "moderado",
+      "efectos": "Parabeno: sospecha de disrupción endocrina.",
+      "fuente": "EFSA 2004"
+    },
+    "E216": {
+      "nombre": "Propilparabeno",
+      "tipo": "conservante (parabeno)",
+      "riesgo": "moderado",
+      "efectos": "Disruptor endocrino: EFSA retiró su IDA por efectos hormonales/reproductivos.",
+      "fuente": "EFSA 2004"
+    },
+    "E218": {
+      "nombre": "Metilparabeno",
+      "tipo": "conservante (parabeno)",
+      "riesgo": "moderado",
+      "efectos": "Parabeno con sospecha de actividad estrogénica.",
+      "fuente": "EFSA"
+    },
+    "E221": {
+      "nombre": "Sulfito sódico",
+      "tipo": "conservante (sulfito)",
+      "riesgo": "limitado",
+      "efectos": "Alérgeno; asma y reacciones en personas sensibles.",
+      "fuente": "EFSA 2016"
+    },
+    "E224": {
+      "nombre": "Metabisulfito potásico",
+      "tipo": "conservante (sulfito)",
+      "riesgo": "limitado",
+      "efectos": "Sulfito: asma y reacciones alérgicas.",
+      "fuente": "EFSA 2016"
+    },
+    "E228": {
+      "nombre": "Bisulfito potásico",
+      "tipo": "conservante (sulfito)",
+      "riesgo": "limitado",
+      "efectos": "Sulfito: alérgeno, asma en sensibles.",
+      "fuente": "EFSA 2016"
+    },
+    "E239": {
+      "nombre": "Hexametilentetramina",
+      "tipo": "conservante",
+      "riesgo": "moderado",
+      "efectos": "Libera formaldehído (cancerígeno); uso muy restringido (solo queso provolone).",
+      "fuente": "EFSA"
+    },
+    "E280": {
+      "nombre": "Ácido propiónico",
+      "tipo": "conservante",
+      "riesgo": "limitado",
+      "efectos": "Estudios recientes lo asocian a efectos metabólicos (resistencia a la insulina) a dosis altas.",
+      "fuente": "Tirosh 2019"
+    },
+    "E282": {
+      "nombre": "Propionato cálcico",
+      "tipo": "conservante",
+      "riesgo": "limitado",
+      "efectos": "Propionato de panadería; posible relación con irritabilidad/migraña en sensibles.",
+      "fuente": "EFSA 2014"
+    },
+    "E284": {
+      "nombre": "Ácido bórico",
+      "tipo": "conservante",
+      "riesgo": "elevado",
+      "efectos": "Tóxico reproductivo; prohibido como aditivo en la mayoría de países.",
+      "fuente": "EFSA"
+    },
+    "E310": {
+      "nombre": "Galato de propilo",
+      "tipo": "antioxidante sintético",
+      "riesgo": "moderado",
+      "efectos": "Sospecha de disrupción endocrina y efectos alérgicos.",
+      "fuente": "EFSA 2014"
+    },
+    "E311": {
+      "nombre": "Galato de octilo",
+      "tipo": "antioxidante sintético",
+      "riesgo": "moderado",
+      "efectos": "Reacciones alérgicas; Yuka lo reclasificó a rojo (2024).",
+      "fuente": "Yuka 2024; EFSA"
+    },
+    "E312": {
+      "nombre": "Galato de dodecilo",
+      "tipo": "antioxidante sintético",
+      "riesgo": "moderado",
+      "efectos": "Como los otros galatos: alérgico; Yuka lo reclasificó a rojo (2024).",
+      "fuente": "Yuka 2024; EFSA"
+    },
+    "E319": {
+      "nombre": "TBHQ (butilhidroquinona terciaria)",
+      "tipo": "antioxidante sintético",
+      "riesgo": "moderado",
+      "efectos": "Estudios sugieren efectos sobre el sistema inmune y sospecha tumoral a dosis altas.",
+      "fuente": "EFSA 2016"
+    },
+    "E324": {
+      "nombre": "Etoxiquina",
+      "tipo": "antioxidante sintético",
+      "riesgo": "elevado",
+      "efectos": "No autorizado en alimentos para humanos en la UE; sospecha de genotoxicidad; Yuka rojo (2025).",
+      "fuente": "Yuka 2025; EFSA"
+    },
+    "E385": {
+      "nombre": "EDTA cálcico disódico",
+      "tipo": "secuestrante",
+      "riesgo": "limitado",
+      "efectos": "Puede reducir la absorción de minerales; riesgo bajo a dosis alimentarias.",
+      "fuente": "EFSA"
+    },
+    "E420": {
+      "nombre": "Sorbitol",
+      "tipo": "edulcorante (poliol)",
+      "riesgo": "limitado",
+      "efectos": "Efecto laxante y flatulencia a partir de cierta cantidad; advertencia obligatoria.",
+      "fuente": "EFSA"
+    },
+    "E421": {
+      "nombre": "Manitol",
+      "tipo": "edulcorante (poliol)",
+      "riesgo": "limitado",
+      "efectos": "Efecto laxante a dosis altas.",
+      "fuente": "EFSA"
+    },
+    "E953": {
+      "nombre": "Isomaltitol",
+      "tipo": "edulcorante (poliol)",
+      "riesgo": "limitado",
+      "efectos": "Efecto laxante a dosis altas.",
+      "fuente": "EFSA"
+    },
+    "E961": {
+      "nombre": "Neotamo",
+      "tipo": "edulcorante intenso",
+      "riesgo": "moderado",
+      "efectos": "Estudio 2024 sugiere daño a la barrera intestinal; evidencia emergente.",
+      "fuente": "Shil 2024"
+    },
+    "E962": {
+      "nombre": "Sal de aspartamo-acesulfamo",
+      "tipo": "edulcorante intenso",
+      "riesgo": "moderado",
+      "efectos": "Combina aspartamo (IARC 2B) y acesulfamo; mismas reservas.",
+      "fuente": "IARC 2023"
+    },
+    "E965": {
+      "nombre": "Maltitol",
+      "tipo": "edulcorante (poliol)",
+      "riesgo": "limitado",
+      "efectos": "Efecto laxante y flatulencia a dosis altas.",
+      "fuente": "EFSA"
+    },
+    "E967": {
+      "nombre": "Xilitol",
+      "tipo": "edulcorante (poliol)",
+      "riesgo": "limitado",
+      "efectos": "Laxante a dosis altas; un estudio 2024 lo asoció a riesgo cardiovascular (en revisión).",
+      "fuente": "Witkowski 2024"
+    },
+    "E968": {
+      "nombre": "Eritritol",
+      "tipo": "edulcorante (poliol)",
+      "riesgo": "moderado",
+      "efectos": "Estudio 2023 lo asoció a mayor riesgo de trombosis/eventos cardiovasculares; Yuka lo subió a naranja.",
+      "fuente": "Witkowski 2023; Yuka 2025"
+    },
+    "E957": {
+      "nombre": "Taumatina",
+      "tipo": "edulcorante natural",
+      "riesgo": "limitado",
+      "efectos": "Origen proteico natural; datos limitados, Yuka lo puso en amarillo.",
+      "fuente": "Yuka 2023"
+    },
+    "E959": {
+      "nombre": "Neohesperidina DC",
+      "tipo": "edulcorante intenso",
+      "riesgo": "limitado",
+      "efectos": "Derivado de cítricos; datos limitados.",
+      "fuente": "EFSA"
+    },
+    "E400": {
+      "nombre": "Ácido algínico",
+      "tipo": "espesante natural",
+      "riesgo": "ninguno",
+      "efectos": "Fibra de alga; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E401": {
+      "nombre": "Alginato sódico",
+      "tipo": "espesante natural",
+      "riesgo": "ninguno",
+      "efectos": "Derivado de alga; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E405": {
+      "nombre": "Alginato de propilenglicol",
+      "tipo": "espesante",
+      "riesgo": "elevado",
+      "efectos": "Modificado químicamente; riesgo bajo. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA"
+    },
+    "E407A": {
+      "nombre": "Alga Eucheuma procesada",
+      "tipo": "espesante",
+      "riesgo": "elevado",
+      "efectos": "Similar a los carragenanos: sospecha de inflamación intestinal. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Yuka 2024"
+    },
+    "E425": {
+      "nombre": "Konjac",
+      "tipo": "espesante",
+      "riesgo": "elevado",
+      "efectos": "Fibra; riesgo de atragantamiento en forma de gel (prohibido en golosinas). (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA"
+    },
+    "E432": {
+      "nombre": "Polisorbato 20",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Los polisorbatos alteran la microbiota e inflamación intestinal en estudios. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Chassaing 2015"
+    },
+    "E433": {
+      "nombre": "Polisorbato 80",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente asociado a alteración de la microbiota e inflamación (estudios). (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Chassaing 2015"
+    },
+    "E442": {
+      "nombre": "Fosfátidos de amonio",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Yuka lo reclasificó a rojo (2025); emulgente de cacao con datos de microbiota. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Yuka 2025"
+    },
+    "E460": {
+      "nombre": "Celulosa",
+      "tipo": "espesante",
+      "riesgo": "elevado",
+      "efectos": "Fibra; Yuka lo subió a naranja por datos de microbiota (formas microcristalinas). (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Yuka 2024"
+    },
+    "E461": {
+      "nombre": "Metilcelulosa",
+      "tipo": "espesante",
+      "riesgo": "elevado",
+      "efectos": "Celulosa modificada; posible efecto en microbiota. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Yuka 2025"
+    },
+    "E464": {
+      "nombre": "Hidroxipropilmetilcelulosa",
+      "tipo": "espesante",
+      "riesgo": "elevado",
+      "efectos": "Celulosa modificada; riesgo limitado. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA"
+    },
+    "E472A": {
+      "nombre": "Ésteres acéticos de mono/diglicéridos",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente; indicador de ultraprocesado, riesgo bajo. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA 2017"
+    },
+    "E472B": {
+      "nombre": "Ésteres lácticos de mono/diglicéridos",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente común; riesgo bajo. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA 2017"
+    },
+    "E472C": {
+      "nombre": "Ésteres cítricos de mono/diglicéridos",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente común; riesgo bajo. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA 2017"
+    },
+    "E476": {
+      "nombre": "PGPR (poliricinoleato de poliglicerol)",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Emulgente del chocolate; riesgo bajo, indicador de ultraprocesado. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "EFSA 2017"
+    },
+    "E491": {
+      "nombre": "Monoestearato de sorbitán",
+      "tipo": "emulgente",
+      "riesgo": "elevado",
+      "efectos": "Ésteres de sorbitán: posible impacto en microbiota. (Reclasificado a riesgo elevado: emulgente/espesante añadido con datos emergentes sobre microbiota e inflamación intestinal.)",
+      "fuente": "Yuka"
+    },
+    "E338": {
+      "nombre": "Ácido fosfórico",
+      "tipo": "regulador de acidez",
+      "riesgo": "limitado",
+      "efectos": "Fósforo: erosión dental y, en consumo alto, carga renal/cardiovascular (típico en colas).",
+      "fuente": "EFSA 2019"
+    },
+    "E339": {
+      "nombre": "Fosfatos de sodio",
+      "tipo": "estabilizante (fosfato)",
+      "riesgo": "limitado",
+      "efectos": "Fósforo añadido: carga renal y cardiovascular en consumo elevado.",
+      "fuente": "EFSA 2019"
+    },
+    "E341": {
+      "nombre": "Fosfatos de calcio",
+      "tipo": "estabilizante (fosfato)",
+      "riesgo": "limitado",
+      "efectos": "Fósforo añadido; relevante en consumo alto / enfermedad renal.",
+      "fuente": "EFSA 2019"
+    },
+    "E620": {
+      "nombre": "Ácido glutámico",
+      "tipo": "potenciador del sabor",
+      "riesgo": "moderado",
+      "efectos": "Como el glutamato: malestar en sensibles a dosis altas; debate sobre apetito.",
+      "fuente": "EFSA 2017"
+    },
+    "E622": {
+      "nombre": "Glutamato monopotásico",
+      "tipo": "potenciador del sabor",
+      "riesgo": "moderado",
+      "efectos": "Familia del glutamato; mismas reservas que E621.",
+      "fuente": "EFSA 2017"
+    },
+    "E627": {
+      "nombre": "Guanilato disódico",
+      "tipo": "potenciador del sabor",
+      "riesgo": "limitado",
+      "efectos": "Ribonucleótido; a evitar en gota (metaboliza a purinas/ácido úrico).",
+      "fuente": "EFSA"
+    },
+    "E631": {
+      "nombre": "Inosinato disódico",
+      "tipo": "potenciador del sabor",
+      "riesgo": "limitado",
+      "efectos": "Ribonucleótido; a evitar en gota; suele acompañar al glutamato.",
+      "fuente": "EFSA"
+    },
+    "E635": {
+      "nombre": "Ribonucleótidos de sodio",
+      "tipo": "potenciador del sabor",
+      "riesgo": "limitado",
+      "efectos": "Mezcla de ribonucleótidos; precaución en gota.",
+      "fuente": "EFSA"
+    },
+    "E535": {
+      "nombre": "Ferrocianuro sódico",
+      "tipo": "antiaglomerante",
+      "riesgo": "limitado",
+      "efectos": "Antiaglomerante de la sal; riesgo bajo a dosis autorizadas.",
+      "fuente": "EFSA 2018"
+    },
+    "E551": {
+      "nombre": "Dióxido de silicio",
+      "tipo": "antiaglomerante",
+      "riesgo": "limitado",
+      "efectos": "Antiaglomerante; dudas sobre las nanopartículas, en reevaluación.",
+      "fuente": "EFSA 2018"
+    },
+    "E900": {
+      "nombre": "Dimetilpolisiloxano",
+      "tipo": "antiespumante",
+      "riesgo": "limitado",
+      "efectos": "Antiespumante (frituras); riesgo bajo.",
+      "fuente": "EFSA"
+    },
+    "E1442": {
+      "nombre": "Fosfato de dialmidón hidroxipropilado",
+      "tipo": "almidón modificado",
+      "riesgo": "limitado",
+      "efectos": "Almidón modificado químicamente; riesgo bajo, marcador de ultraprocesado.",
+      "fuente": "EFSA"
+    },
+    "E1520": {
+      "nombre": "Propilenglicol",
+      "tipo": "disolvente/humectante",
+      "riesgo": "limitado",
+      "efectos": "Humectante; seguro a dosis alimentarias pero con IDA; irritante a dosis altas.",
+      "fuente": "EFSA 2018"
+    },
+    "E140": {
+      "nombre": "Clorofilas",
+      "tipo": "colorante natural",
+      "riesgo": "ninguno",
+      "efectos": "Pigmento verde natural; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E160E": {
+      "nombre": "Beta-apo-8-carotenal",
+      "tipo": "colorante",
+      "riesgo": "limitado",
+      "efectos": "Carotenoide sintético; riesgo bajo.",
+      "fuente": "EFSA"
+    },
+    "E260": {
+      "nombre": "Ácido acético",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Es el vinagre; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E263": {
+      "nombre": "Acetato cálcico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Sin riesgo conocido.",
+      "fuente": "EFSA"
+    },
+    "E297": {
+      "nombre": "Ácido fumárico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Ácido natural; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E327": {
+      "nombre": "Lactato cálcico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Sal del ácido láctico; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E334": {
+      "nombre": "Ácido tartárico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Ácido natural de la uva; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E336": {
+      "nombre": "Tartrato potásico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Sin riesgo (cremor tártaro).",
+      "fuente": "EFSA"
+    },
+    "E402": {
+      "nombre": "Alginato potásico",
+      "tipo": "espesante natural",
+      "riesgo": "ninguno",
+      "efectos": "Derivado de alga; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E501": {
+      "nombre": "Carbonato potásico",
+      "tipo": "regulador de acidez",
+      "riesgo": "ninguno",
+      "efectos": "Sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E504": {
+      "nombre": "Carbonato de magnesio",
+      "tipo": "antiaglomerante",
+      "riesgo": "ninguno",
+      "efectos": "Sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E509": {
+      "nombre": "Cloruro cálcico",
+      "tipo": "estabilizante",
+      "riesgo": "ninguno",
+      "efectos": "Sal mineral; sin riesgo.",
+      "fuente": "EFSA"
+    },
+    "E1400": {
+      "nombre": "Dextrinas",
+      "tipo": "almidón",
+      "riesgo": "ninguno",
+      "efectos": "Almidón; sin riesgo.",
+      "fuente": "EFSA"
+    }
+  },
+  "palabras_clave": {
+    "_doc": "Mapeo texto->E para cuando OFF no tiene el producto y hay que parsear los ingredientes de Mercadona.",
+    "goma guar": "E412",
+    "guar": "E412",
+    "goma xantana": "E415",
+    "xantana": "E415",
+    "carragenano": "E407",
+    "carragenanos": "E407",
+    "goma garrofin": "E410",
+    "goma garrofín": "E410",
+    "acido citrico": "E330",
+    "ácido cítrico": "E330",
+    "acido lactico": "E270",
+    "ácido láctico": "E270",
+    "acido ascorbico": "E300",
+    "ácido ascórbico": "E300",
+    "lecitina": "E322",
+    "lecitinas": "E322",
+    "pectina": "E440",
+    "glutamato monosodico": "E621",
+    "glutamato monosódico": "E621",
+    "glutamato": "E621",
+    "nitrito sodico": "E250",
+    "nitrito sódico": "E250",
+    "nitrito potasico": "E249",
+    "nitrito potásico": "E249",
+    "aspartamo": "E951",
+    "sucralosa": "E955",
+    "sacarina": "E954",
+    "acesulfamo": "E950",
+    "sorbato": "E202",
+    "benzoato": "E211",
+    "difosfato": "E450",
+    "difosfatos": "E450",
+    "trifosfato": "E451",
+    "polifosfato": "E452",
+    "dioxido de titanio": "E171",
+    "dióxido de titanio": "E171",
+    "bha": "E320",
+    "bht": "E321",
+    "sulfito": "E220",
+    "metabisulfito": "E223",
+    "estevia": "E960",
+    "romero": "E392",
+    "tocoferol": "E306",
+    "tocoferoles": "E306",
+    "carmin": "E120",
+    "cochinilla": "E120",
+    "amaranto": "E123",
+    "eritrosina": "E127",
+    "parabeno": "E218",
+    "parabenos": "E218",
+    "propilparabeno": "E216",
+    "metilparabeno": "E218",
+    "galato de propilo": "E310",
+    "galato": "E310",
+    "tbhq": "E319",
+    "etoxiquina": "E324",
+    "sorbitol": "E420",
+    "manitol": "E421",
+    "maltitol": "E965",
+    "xilitol": "E967",
+    "eritritol": "E968",
+    "neotamo": "E961",
+    "isomaltitol": "E953",
+    "taumatina": "E957",
+    "polisorbato": "E433",
+    "carboximetilcelulosa": "E466",
+    "celulosa microcristalina": "E460",
+    "metilcelulosa": "E461",
+    "mono y digliceridos": "E471",
+    "monoglicéridos": "E471",
+    "monogliceridos": "E471",
+    "pgpr": "E476",
+    "fosfatidos de amonio": "E442",
+    "fosfátidos de amonio": "E442",
+    "acido fosforico": "E338",
+    "ácido fosfórico": "E338",
+    "fosfato": "E339",
+    "fosfatos": "E339",
+    "acido glutamico": "E620",
+    "ácido glutámico": "E620",
+    "guanilato": "E627",
+    "inosinato": "E631",
+    "ribonucleotidos": "E635",
+    "ribonucleótidos": "E635",
+    "dioxido de silicio": "E551",
+    "dióxido de silicio": "E551",
+    "ferrocianuro": "E535",
+    "propilenglicol": "E1520",
+    "alga eucheuma": "E407a",
+    "konjac": "E425",
+    "acido borico": "E284",
+    "ácido bórico": "E284",
+    "aluminio": "E173",
+    "clorofila": "E140",
+    "clorofilas": "E140",
+    "acido acetico": "E260",
+    "ácido acético": "E260",
+    "acido tartarico": "E334",
+    "ácido tartárico": "E334",
+    "acido fumarico": "E297",
+    "ácido fumárico": "E297",
+    "licopeno": "E160d",
+    "luteina": "E161b",
+    "luteína": "E161b",
+    "antocianinas": "E163",
+    "annato": "E160b",
+    "achiote": "E160b",
+    "bixina": "E160b"
+  }
+}
