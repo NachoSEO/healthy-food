@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Semáforo Sano · Mercadona",
+  "version": "1.0.0",
+  "description": "Muestra un semáforo de salud (aditivos, riesgo y efectos) junto a cada producto en tienda.mercadona.es. Al pasar el ratón sobre el icono, ves qué lleva y por qué.",
+  "host_permissions": ["https://tienda.mercadona.es/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://tienda.mercadona.es/*"],
+      "js": ["src/hook.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://tienda.mercadona.es/*"],
+      "js": ["src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_idle",
+      "world": "ISOLATED"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["data/aditivos.json"],
+      "matches": ["https://tienda.mercadona.es/*"]
+    }
+  ]
+}

@@ -27,6 +27,11 @@ real**. Reutiliza el motor de la skill anterior.
 - `scripts/add_to_cart.js` — añade al carro vía `PUT /api/customers/{uuid}/cart/` **y verifica** que persiste.
 - `scripts/report.py` — informe HTML agrupado con semáforo, precios, enlaces y cambios por salud.
 
+### `extension/` — Semáforo Sano (extensión de Chrome)
+Extensión Manifest V3 que, mientras navegas por `tienda.mercadona.es`, pinta un **semáforo de salud
+junto a cada producto**; al pasar el ratón muestra aditivos, riesgo y efectos. Reutiliza la misma base
+`data/aditivos.json`. Instalación en `extension/README.md` (Cargar descomprimida en `chrome://extensions`).
+
 ## Clasificación de riesgo (estilo Yuka)
 
 | Nivel | Significado |
