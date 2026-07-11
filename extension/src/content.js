@@ -18,6 +18,17 @@
   const idByName = new Map();
   const detailCache = new Map();
   let ready = false;
+  let marked = 0;
+
+  let statusTimer = null;
+  function logStatus() {
+    if (statusTimer) return;
+    statusTimer = setTimeout(() => {
+      statusTimer = null;
+      console.log('%c🚦 Semáforo Sano', 'font-weight:bold;color:#2f9e63',
+        '· ' + marked + ' productos marcados · ' + detailCache.size + ' fichas analizadas · almacén ' + warehouse());
+    }, 400);
+  }
 
   // ---------- utilidades ----------
   const norm = (s) => (s || '').normalize('NFKD').replace(/[̀-ͯ]/g, '')
@@ -154,7 +165,10 @@
       const badge = makeBadge();
       el.insertAdjacentElement('afterbegin', badge);
       el.insertBefore(document.createTextNode(' '), badge.nextSibling);
-      getDetail(id).then((info) => { if (info) applyBadge(badge, info); else badge.remove(); });
+      getDetail(id).then((info) => {
+        if (info) { applyBadge(badge, info); marked++; logStatus(); }
+        else badge.remove();
+      });
     });
   }
 
@@ -197,6 +211,8 @@
       for (const k in cfg.aditivos) DB[k.toUpperCase()] = cfg.aditivos[k];
       KW = cfg.palabras_clave || {};
       ready = true;
+      console.log('%c🚦 Semáforo Sano activo', 'font-weight:bold;color:#2f9e63',
+        '· ' + Object.keys(DB).length + ' aditivos cargados · almacén ' + warehouse() + ' · navega por una categoría y pasa el ratón por los puntos');
       const mo = new MutationObserver(scheduleScan);
       mo.observe(document.documentElement, { childList: true, subtree: true });
       scheduleScan();
