@@ -262,9 +262,14 @@
     if (!m) return;
     const id = m[1];
     const h1 = document.querySelector('h1');
-    // data-mdna guarda el id: si la SPA reutiliza el h1 para otro producto, se repinta
-    if (!h1 || h1.getAttribute('data-mdna') === id) return;
-    h1.setAttribute('data-mdna', id);
+    if (!h1) return;
+    // data-mdna = "<id>:<estado>". La ficha (sobre todo el modal) se renderiza en fases y
+    // React puede borrar nuestro badge/panel al re-renderizar: si faltan, se repinta.
+    const attr = h1.getAttribute('data-mdna');
+    const badgeAlive = !!h1.querySelector('.mdna-badge');
+    if (attr === id + ':pending') return; // ficha ya en camino
+    if (attr === id + ':done' && badgeAlive && document.querySelector('.mdna-panel')) return;
+    h1.setAttribute('data-mdna', id + ':pending');
     const stale = h1.querySelector('.mdna-badge'); if (stale) stale.remove();
     document.querySelectorAll('.mdna-panel').forEach((p) => p.remove());
     const badge = makeBadge();
@@ -272,10 +277,12 @@
     h1.insertAdjacentElement('afterbegin', badge);
     h1.insertBefore(document.createTextNode(' '), badge.nextSibling);
     getDetail(id).then((info) => {
-      if (!info) { badge.remove(); return; }
+      // Si mientras tanto se navegó a otro producto o se desmontó el h1, no pintar aquí
+      if (!h1.isConnected || h1.getAttribute('data-mdna') !== id + ':pending') { badge.remove(); return; }
+      if (!info) { badge.remove(); h1.removeAttribute('data-mdna'); return; }
+      h1.setAttribute('data-mdna', id + ':done');
       applyBadge(badge, info);
       // En la ficha hay espacio: panel siempre visible bajo el título, sin depender del hover
-      if (h1.getAttribute('data-mdna') !== id || document.querySelector('.mdna-panel')) return;
       const panel = document.createElement('div');
       panel.className = 'mdna-panel';
       panel.innerHTML = tipHtml(info);
