@@ -126,13 +126,25 @@
     const has = (k) => info.allergens.indexOf(k) >= 0;
     const sinGluten = /sin gluten/i.test(info.mandatory) || off.glutenFreeLabel ? 'si' : (has('gluten') ? 'no' : '?');
     const sinLactosa = /sin lactosa/i.test(info.mandatory) ? 'si' : (has('leche') ? 'no' : '?');
+    // OFF casi nunca trae el análisis vegano/vegetariano para marca blanca: se complementa
+    // detectando ingredientes de origen animal en el texto de Mercadona (sin acentos, ver norm).
+    const ing = norm(info.ingredients);
+    const adds = info.additives.map((a) => a.e);
+    const meatFish = MEAT_FISH_RE.test(ing) || adds.indexOf('E120') >= 0 || adds.indexOf('E441') >= 0 || adds.indexOf('E904') >= 0;
+    const animalOther = ANIMAL_OTHER_RE.test(ing) || adds.indexOf('E901') >= 0 || adds.indexOf('E966') >= 0 || adds.indexOf('E1105') >= 0;
+    const vegetariano = meatFish ? 'no' : (off.vegetarian === 'si' ? 'si' : (off.vegetarian || '?'));
+    const vegano = (meatFish || animalOther) ? 'no' : (off.vegan === 'si' ? 'si' : (off.vegan || '?'));
     return {
       gluten: sinGluten,
       lactosa: sinLactosa,
-      vegano: off.vegan || '?',
-      vegetariano: off.vegetarian || '?',
+      vegano: vegano,
+      vegetariano: vegetariano,
     };
   }
+  // carne/pescado y derivados directos (E120 cochinilla, E441 gelatina, E904 goma laca)
+  const MEAT_FISH_RE = /\b(carnes?|pollo|pavo|cerdo|vacuno|ternera|cordero|conejo|jamon|lacon|panceta|bacon|beicon|tocino|chorizo|salchichas?|salchichon|fuet|embutidos?|morcilla|butifarra|grasa animal|manteca de cerdo|gelatina|pescados?|atun|bonito|salmon|anchoas?|boquerones?|merluza|bacalao|sardinas?|caballa|trucha|mariscos?|gambas?|langostinos?|cangrejo|mejillones?|calamar|sepia|pulpo|almejas?|berberechos?|surimi|cochinilla|carmin|caldo de (ave|carne|pollo|jamon|pescado)|jugo de carne)\b/;
+  // lácteos, huevo, miel… (además E901 cera de abejas, E966 lactitol, E1105 lisozima)
+  const ANIMAL_OTHER_RE = /\b(leche|lacteos?|lactosa|caseina|caseinatos?|nata|mantequilla|mantecados?|queso|yogur|kefir|cuajo|huevos?|ovoproductos?|albumina|yema|miel|lisozima|lactitol)\b|suero (de leche|lacteo|en polvo)/;
 
   // ---------- almacén ----------
   let sniffedWh = null; // almacén detectado de las peticiones de la propia web (fiable)
