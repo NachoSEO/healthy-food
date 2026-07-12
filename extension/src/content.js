@@ -1,7 +1,7 @@
 // Content script (mundo aislado). Pinta un semáforo junto a cada producto y muestra
 // un tooltip con aditivos, riesgo, efectos, NOVA y nutrientes clave.
 // Incluye filtros de salud y dieta (panel flotante 🍏), alerta de alérgenos propios,
-// búsqueda de alternativa más sana y nota media del carro.
+// y nota media del carro.
 (function () {
   'use strict';
 
@@ -20,7 +20,6 @@
   const idByName = new Map();
   const detailCache = new Map();
   const offCache = new Map();      // ean -> promesa con datos de Open Food Facts
-  const altCache = new Map();      // id de categoría -> promesa con productos
   const registry = new Map();      // badge -> { card, info } para aplicar filtros
   let ready = false;
   let marked = 0;
@@ -240,9 +239,6 @@
         const det = d.details || {};
         const ing = strip(ni.ingredients);
         const c = classify(ing);
-        // categoría: nivel 0 (la API solo pagina por este) y hoja (para elegir la subcategoría)
-        let catRoot = null, catLeaf = null, cur = (d.categories || [])[0];
-        if (cur) { catRoot = cur.id; while (cur.categories && cur.categories[0]) cur = cur.categories[0]; catLeaf = cur.id; }
         const allergensText = strip(ni.allergens);
         const info = {
           id: String(d.id), name: d.display_name || '', ingredients: ing,
@@ -250,7 +246,6 @@
           allergensText: allergensText,
           allergens: detectAllergens(ni.ingredients, allergensText),
           mandatory: det.mandatory_mentions || '',
-          catRoot: catRoot, catLeaf: catLeaf,
           off: null, diet: null,
         };
         return getOff(d.ean).then((off) => {
@@ -262,56 +257,6 @@
       .catch(() => { detailCache.delete(id); return null; });
     detailCache.set(id, pr);
     return pr;
-  }
-
-  // ---------- alternativa más sana ----------
-  function categoryProducts(catRoot, catLeaf) {
-    const key = catRoot + ':' + (catLeaf || '');
-    if (altCache.has(key)) return altCache.get(key);
-    const wh = getWh();
-    const pr = queuedFetch('/api/categories/' + catRoot + '/?lang=es' + (wh ? '&wh=' + wh : ''))
-      .then((r) => (r && r.ok ? r.json() : null))
-      .then((d) => {
-        if (!d) return [];
-        const subs = d.categories || [];
-        const leaf = subs.find((s) => s.id === catLeaf);
-        const pool = leaf ? (leaf.products || []) : subs.reduce((acc, s) => acc.concat(s.products || []), []);
-        return pool.map((p) => String(p.id));
-      })
-      .catch(() => []);
-    altCache.set(key, pr);
-    return pr;
-  }
-  function findAlternative(info) {
-    if (!info.catRoot) return Promise.resolve(null);
-    return categoryProducts(info.catRoot, info.catLeaf).then((ids) => {
-      const candidates = ids.filter((x) => x !== info.id).slice(0, 12);
-      return Promise.all(candidates.map((x) => getDetail(x)));
-    }).then((details) => {
-      const better = details.filter(Boolean).filter((d) => d.order < info.order);
-      better.sort((a, b) => (a.order - b.order) || (a.additives.length - b.additives.length));
-      return better[0] || null;
-    });
-  }
-  function altButtonHtml(info) {
-    if (info.order < 1) return '';
-    return '<div class="mdna-alt"><button type="button" class="mdna-alt-btn">🔄 Buscar alternativa más sana</button><div class="mdna-alt-out"></div></div>';
-  }
-  function attachAltHandler(rootEl, info) {
-    const btn = rootEl.querySelector('.mdna-alt-btn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      const out = rootEl.querySelector('.mdna-alt-out');
-      btn.disabled = true;
-      out.textContent = 'Analizando la categoría…';
-      findAlternative(info).then((alt) => {
-        if (!alt) { out.textContent = 'No hay alternativa más limpia en esta categoría.'; return; }
-        out.innerHTML = '<span class="mdna-d" style="background:' + alt.color + '"></span> '
-          + '<a href="https://tienda.mercadona.es/product/' + esc(alt.id) + '" target="_blank" rel="noopener">'
-          + esc(alt.name) + '</a> · ' + esc(alt.label)
-          + (alt.additives.length ? ' · ' + alt.additives.length + ' aditivo(s)' : ' · sin aditivos');
-      });
-    });
   }
 
   // ---------- contenido del tooltip/panel ----------
@@ -366,7 +311,6 @@
     h += allergensHtml(info);
     h += dietHtml(info);
     if (info.ingredients) h += '<div class="mdna-ing"><b>Ingredientes:</b> ' + esc(info.ingredients) + '</div>';
-    h += altButtonHtml(info);
     h += '<div class="mdna-foot">Informativo · Mercadona + Open Food Facts + base EFSA/ANSES/IARC/Yuka</div>';
     return h;
   }
@@ -378,7 +322,7 @@
     tip = document.createElement('div');
     tip.className = 'mdna-tip';
     tip.style.display = 'none';
-    // El tooltip es interactivo (scroll interno y botón de alternativa)
+    // El tooltip es interactivo (scroll interno si no cabe entero)
     tip.addEventListener('mouseenter', cancelHide);
     tip.addEventListener('mouseleave', scheduleHide);
     document.body.appendChild(tip);
@@ -394,7 +338,6 @@
     cancelHide();
     const t = tooltip();
     t.innerHTML = tipHtml(badge._info);
-    attachAltHandler(t, badge._info);
     const MARGIN = 10, GAP = 6;
     const tw = Math.min(340, window.innerWidth - 2 * MARGIN);
     t.style.width = tw + 'px';
@@ -531,7 +474,6 @@
       const panel = document.createElement('div');
       panel.className = 'mdna-panel';
       panel.innerHTML = tipHtml(info);
-      attachAltHandler(panel, info);
       h1.insertAdjacentElement('afterend', panel);
       marked++; logStatus();
     });

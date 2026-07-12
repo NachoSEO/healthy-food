@@ -80,16 +80,6 @@
 .mdna-diet-ko { color: #cf4436; font-weight: 700; }
 .mdna-diet-na { color: #99a595; }
 
-/* Alternativa más sana */
-.mdna-alt { margin-top: 9px; padding-top: 8px; border-top: 1px solid #eef1ec; }
-.mdna-alt-btn {
-  background: #2f9e63; color: #fff; border: 0; border-radius: 8px;
-  padding: 5px 10px; font-size: 12px; font-weight: 700; cursor: pointer;
-}
-.mdna-alt-btn:disabled { opacity: .6; cursor: default; }
-.mdna-alt-out { margin-top: 6px; }
-.mdna-alt-out a { color: #2f9e63; font-weight: 700; }
-
 /* Filtros aplicados a las tarjetas */
 .mdna-dim { opacity: .25; filter: grayscale(.8); transition: opacity .15s ease; }
 .mdna-hide { display: none !important; }
@@ -148,7 +138,6 @@
   .mdna-ing { color: #9aa896; border-top-color: #2b3327; }
   .mdna-badge { box-shadow: 0 0 0 2px rgba(0, 0, 0, .5); }
   .mdna-nutrients, .mdna-allergens, .mdna-diet, .mdna-cart-val { color: #9aa896; }
-  .mdna-alt { border-top-color: #2b3327; }
   .mdna-fab, .mdna-sheet { background: #1a1f17; color: #e9eee6; border-color: #2b3327; }
   .mdna-seg, .mdna-seg button, .mdna-al { border-color: #3a4535; }
   .mdna-seg button, .mdna-al { color: #b9c4b4; }

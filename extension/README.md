@@ -18,9 +18,6 @@ vegetariano**. El botón flotante **🍏** (abajo a la derecha) abre el panel de
 - **Nota del carro**: media 0-10 de tu compra (requiere sesión iniciada; se calcula cuando la web
   carga el carro).
 
-En el tooltip y en la ficha hay además un botón **"🔄 Buscar alternativa más sana"** que analiza la
-misma categoría y enlaza el producto más limpio que encuentre.
-
 ## Colores
 
 | Color | Significado |
