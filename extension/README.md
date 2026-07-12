@@ -7,6 +7,20 @@ de riesgo y el efecto de salud** (con la fuente: EFSA, ANSES, IARC, Yuka).
 Funciona en **categorías, búsqueda** (Algolia) **y en la ficha de producto**, donde además del badge
 se muestra un panel fijo con el detalle bajo el título.
 
+Desde la 1.2.0 el tooltip añade **Nutri-Score, NOVA y nutrientes por 100 g** (vía Open Food Facts,
+con caché local de 30 días), **alérgenos declarados** y aptitud **sin gluten / sin lactosa / vegano /
+vegetariano**. El botón flotante **🍏** (abajo a la derecha) abre el panel de filtros:
+
+- **Salud**: mostrar / atenuar / ocultar los productos 🔴/🟠.
+- **Dieta**: filtrar los que **no** son sin gluten, sin lactosa, veganos o vegetarianos
+  (los productos sin datos no se filtran).
+- **Mis alérgenos**: marca los tuyos y el punto del producto que los contenga parpadea 🚨.
+- **Nota del carro**: media 0-10 de tu compra (requiere sesión iniciada; se calcula cuando la web
+  carga el carro).
+
+En el tooltip y en la ficha hay además un botón **"🔄 Buscar alternativa más sana"** que analiza la
+misma categoría y enlaza el producto más limpio que encuentre.
+
 ## Colores
 
 | Color | Significado |
@@ -46,23 +60,19 @@ Criterio estricto: emulgentes/espesantes procesados = riesgo elevado; gomas natu
 ## Limitaciones
 - Usa los ingredientes que expone Mercadona; algún producto nuevo puede no tenerlos (badge se omite).
 - El nivel de evidencia varía por aditivo. **Informativo, no es consejo médico.**
-- No añade NOVA/Nutri-Score (eso requiere Open Food Facts); las skills del repo sí lo hacen.
+- Nutri-Score/NOVA/nutrientes y vegano/vegetariano salen de **Open Food Facts** por EAN: si el
+  producto no está en OFF, esos datos no aparecen (el semáforo de aditivos funciona igual).
+- Sin gluten / sin lactosa se deduce de las menciones obligatorias de Mercadona, de la etiqueta OFF y
+  de los alérgenos declarados; ante la duda se marca `?` y **no se filtra**.
+- La nota del carro usa solo el semáforo de aditivos (verde 10 · amarillo 6,5 · naranja 3,5 · rojo 1),
+  ponderado por unidades.
 
-## Roadmap (ideas analizadas)
+## Roadmap
 
-1. **Nutri-Score y NOVA en el tooltip** — la ficha de la API trae el `ean`; con él se puede consultar
-   Open Food Facts (`world.openfoodfacts.org/api/v2/product/{ean}`) y añadir nota nutricional y grado
-   de procesamiento. Requiere `host_permissions` extra y caché local (`chrome.storage`).
-2. **Azúcar/sal/grasas saturadas por 100 g** — ya vienen en `nutrition_information` de la misma
-   respuesta que usamos; pintarlas en el tooltip es gratis (sin peticiones extra).
-3. **Filtros de salud** — atenuar u ocultar los 🔴/🟠 en listados, u ordenar la categoría por semáforo.
-4. **Alerta de alérgenos personalizada** — el usuario marca sus alérgenos en un popup de la extensión
-   y el badge avisa (borde parpadeante) si el producto los contiene (`nutrition_information.allergens`).
-5. **"Ver alternativa más sana"** — botón en el tooltip que busca en la misma categoría un producto
-   más limpio (la lógica ya existe en las skills del repo).
-6. **Nota media del carrito** — badge en el icono de la cesta con la media de la compra actual.
-7. **Multi-supermercado** — arquitectura de adaptadores por tienda (detección de tarjetas + API de
-   ingredientes por súper) reutilizando el mismo motor de clasificación:
-   - **Carrefour, Dia, Alcampo, Eroski, Consum**: tienda online propia; habría que mapear su API/HTML.
-   - **Lidl/Aldi**: sin ingredientes online fiables → fallback por EAN con Open Food Facts.
-   - El manifest pasaría a `content_scripts` por dominio con un módulo `adapters/<super>.js`.
+- **Multi-supermercado** — arquitectura de adaptadores por tienda (detección de tarjetas + API de
+  ingredientes por súper) reutilizando el mismo motor de clasificación:
+  - **Carrefour, Dia, Alcampo, Eroski, Consum**: tienda online propia; habría que mapear su API/HTML.
+  - **Lidl/Aldi**: sin ingredientes online fiables → fallback por EAN con Open Food Facts (la pieza
+    OFF ya está construida).
+  - El manifest pasaría a `content_scripts` por dominio con un módulo `adapters/<super>.js`.
+- **Ordenar por semáforo** los listados (además de atenuar/ocultar).

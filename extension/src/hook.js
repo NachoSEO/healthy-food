@@ -29,7 +29,16 @@
     return !!url && (url.indexOf('/api/') >= 0 || url.indexOf('algolia') >= 0);
   }
 
-  function harvest(data) {
+  let lastCart = null; // últimas líneas del carro vistas [{id, qty}]
+
+  function harvest(url, data) {
+    // Carro del cliente: guardar {id, cantidad} de cada línea para la nota media
+    if (url && /\/api\/customers\/[^/]+\/cart/.test(url) && data && Array.isArray(data.lines)) {
+      lastCart = data.lines
+        .filter((l) => l && l.product && l.product.id != null)
+        .map((l) => ({ id: String(l.product.id), qty: Number(l.quantity) || 1 }));
+      window.postMessage({ __mdnaSem: 1, wh: lastWh, cart: lastCart }, '*');
+    }
     const acc = [];
     collect(data, acc, 0);
     if (!acc.length) return;
@@ -46,7 +55,7 @@
       if (interesting(url)) {
         sniffWh(url);
         p.then((res) => {
-          res.clone().json().then(harvest).catch(() => {});
+          res.clone().json().then((data) => harvest(url, data)).catch(() => {});
         }).catch(() => {});
       }
     } catch (e) { /* noop */ }
@@ -70,7 +79,7 @@
             const data = xhr.responseType === 'json'
               ? xhr.response
               : (!xhr.responseType || xhr.responseType === 'text') ? JSON.parse(xhr.responseText) : null;
-            if (data) harvest(data);
+            if (data) harvest(xhr.__mdnaUrl, data);
           } catch (e) { /* respuesta no JSON */ }
         });
       }
@@ -84,6 +93,7 @@
   window.addEventListener('message', (ev) => {
     if (ev.source !== window || !ev.data || !ev.data.__mdnaSemHello) return;
     post(buffer);
+    if (lastCart) window.postMessage({ __mdnaSem: 1, wh: lastWh, cart: lastCart }, '*');
   });
 
   // Recorre recursivamente cualquier respuesta JSON y recoge objetos "producto".
