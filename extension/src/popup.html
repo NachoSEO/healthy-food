@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    width: 300px; margin: 0; padding: 12px 14px; box-sizing: border-box;
+    background: #ffffff; color: #1a241d;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 12.5px; line-height: 1.4;
+  }
+  .head { font-weight: 800; font-size: 14px; margin-bottom: 10px; }
+  .sec { margin-bottom: 12px; }
+  .sec-t { font-weight: 700; margin-bottom: 6px; }
+  .hint { font-weight: 400; color: #99a595; font-size: 11px; }
+  .seg { display: inline-flex; border: 1px solid #dfe4da; border-radius: 8px; overflow: hidden; margin-top: 4px; }
+  .seg button {
+    border: 0; background: transparent; color: #4c584f; padding: 4px 10px;
+    font-size: 12px; cursor: pointer; border-right: 1px solid #dfe4da;
+  }
+  .seg button:last-child { border-right: 0; }
+  .seg button.on { background: #2f9e63; color: #fff; font-weight: 700; }
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; margin-bottom: 4px; }
+  .checks label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .al {
+    border: 1px solid #dfe4da; background: transparent; color: #4c584f;
+    border-radius: 999px; padding: 3px 9px; font-size: 11.5px; cursor: pointer;
+  }
+  .al.on { background: #cf4436; border-color: #cf4436; color: #fff; font-weight: 700; }
+  .cart-val { color: #5c6b5f; }
+  .foot { margin-top: 4px; color: #a7b0a3; font-size: 10.5px; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1f17; color: #e9eee6; }
+    .seg, .seg button, .al { border-color: #3a4535; }
+    .seg button, .al { color: #b9c4b4; }
+    .cart-val { color: #9aa896; }
+  }
+</style>
+</head>
+<body>
+  <div class="head">🍏 Semáforo Sano</div>
+  <div class="sec">
+    <div class="sec-t">Productos 🔴/🟠</div>
+    <div class="seg" data-set="health">
+      <button type="button" data-v="none">Mostrar</button>
+      <button type="button" data-v="dim">Atenuar</button>
+      <button type="button" data-v="hide">Ocultar</button>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-t">Dieta <span class="hint">(sin datos = no se filtra)</span></div>
+    <div class="checks">
+      <label><input type="checkbox" data-diet="gluten"> Sin gluten</label>
+      <label><input type="checkbox" data-diet="lactosa"> Sin lactosa</label>
+      <label><input type="checkbox" data-diet="vegano"> Vegano</label>
+      <label><input type="checkbox" data-diet="vegetariano"> Vegetariano</label>
+    </div>
+    <div class="seg" data-set="dietMode">
+      <button type="button" data-v="dim">Atenuar</button>
+      <button type="button" data-v="hide">Ocultar</button>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-t">Mis alérgenos <span class="hint">(aviso 🚨 en el punto)</span></div>
+    <div class="chips" id="allergens"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-t">Nota del carro</div>
+    <div class="cart-val" id="cart">Sin datos (inicia sesión y abre el carro)</div>
+  </div>
+  <div class="foot">Los cambios se aplican al momento en tienda.mercadona.es</div>
+  <script src="popup.js"></script>
+</body>
+</html>

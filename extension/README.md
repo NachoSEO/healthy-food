@@ -9,14 +9,15 @@ se muestra un panel fijo con el detalle bajo el título.
 
 Desde la 1.2.0 el tooltip añade **NOVA y nutrientes por 100 g** (vía Open Food Facts,
 con caché local de 30 días), **alérgenos declarados** y aptitud **sin gluten / sin lactosa / vegano /
-vegetariano**. El botón flotante **🍏** (abajo a la derecha) abre el panel de filtros:
+vegetariano**. Al pulsar el **icono de la extensión** en la barra de Chrome se abre el panel de
+filtros (los cambios se aplican al momento en la pestaña):
 
 - **Salud**: mostrar / atenuar / ocultar los productos 🔴/🟠.
 - **Dieta**: filtrar los que **no** son sin gluten, sin lactosa, veganos o vegetarianos
   (los productos sin datos no se filtran).
 - **Mis alérgenos**: marca los tuyos y el punto del producto que los contenga parpadea 🚨.
-- **Nota del carro**: media 0-10 de tu compra (requiere sesión iniciada; se calcula cuando la web
-  carga el carro).
+- **Nota del carro**: media 0-10 de tu compra, visible en el popup (requiere sesión iniciada; se
+  calcula cuando la web carga el carro).
 
 ## Colores
 

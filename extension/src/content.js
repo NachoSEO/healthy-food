@@ -1,6 +1,6 @@
 // Content script (mundo aislado). Pinta un semáforo junto a cada producto y muestra
 // un tooltip con aditivos, riesgo, efectos, NOVA y nutrientes clave.
-// Incluye filtros de salud y dieta (panel flotante 🍏), alerta de alérgenos propios,
+// Incluye filtros de salud y dieta (popup del icono de la extensión), alerta de alérgenos propios,
 // y nota media del carro.
 (function () {
   'use strict';
@@ -501,91 +501,19 @@
       });
   }
   function renderCartScore(score, count) {
-    const chip = document.querySelector('.mdna-fab-score');
-    const line = document.querySelector('.mdna-cart-val');
-    const txt = score == null ? '—' : fmt1(score);
-    const color = score == null ? '#8a8a8a' : score >= 7.5 ? RISK.ninguno.color : score >= 5 ? RISK.limitado.color : score >= 2.5 ? RISK.moderado.color : RISK.elevado.color;
-    if (chip) {
-      chip.textContent = txt;
-      chip.style.background = color;
-      chip.style.display = score == null ? 'none' : '';
-    }
-    if (line) line.innerHTML = score == null
-      ? 'Sin datos (inicia sesión y abre el carro)'
-      : '<b style="color:' + color + '">' + txt + '</b> / 10 · ' + count + ' producto(s)';
+    try { chrome.storage.local.set({ mdnaCart: { score: score, count: count } }); } catch (e) { /* noop */ }
   }
 
-  // ---------- panel flotante (filtros y ajustes) ----------
-  function buildUi() {
-    if (document.querySelector('.mdna-fab')) return;
-    const fab = document.createElement('button');
-    fab.type = 'button';
-    fab.className = 'mdna-fab';
-    fab.title = 'Semáforo Sano · filtros';
-    fab.innerHTML = '🍏<span class="mdna-fab-score" style="display:none"></span>';
-    const sheet = document.createElement('div');
-    sheet.className = 'mdna-sheet';
-    sheet.style.display = 'none';
-    sheet.innerHTML =
-      '<div class="mdna-sheet-head">🍏 Semáforo Sano</div>'
-      + '<div class="mdna-sec"><div class="mdna-sec-t">Productos 🔴/🟠</div>'
-      + '<div class="mdna-seg" data-set="health">'
-      + '<button type="button" data-v="none">Mostrar</button>'
-      + '<button type="button" data-v="dim">Atenuar</button>'
-      + '<button type="button" data-v="hide">Ocultar</button></div></div>'
-      + '<div class="mdna-sec"><div class="mdna-sec-t">Dieta <span class="mdna-hint">(sin datos = no se filtra)</span></div>'
-      + '<div class="mdna-checks">'
-      + ['gluten|Sin gluten', 'lactosa|Sin lactosa', 'vegano|Vegano', 'vegetariano|Vegetariano']
-        .map((x) => { const [k, t] = x.split('|'); return '<label><input type="checkbox" data-diet="' + k + '"> ' + t + '</label>'; }).join('')
-      + '</div>'
-      + '<div class="mdna-seg" data-set="dietMode">'
-      + '<button type="button" data-v="dim">Atenuar</button>'
-      + '<button type="button" data-v="hide">Ocultar</button></div></div>'
-      + '<div class="mdna-sec"><div class="mdna-sec-t">Mis alérgenos <span class="mdna-hint">(aviso 🚨 en el punto)</span></div>'
-      + '<div class="mdna-chips">'
-      + ALLERGENS.map((a) => '<button type="button" class="mdna-al" data-al="' + a.key + '">' + esc(a.label) + '</button>').join('')
-      + '</div></div>'
-      + '<div class="mdna-sec"><div class="mdna-sec-t">Nota del carro</div><div class="mdna-cart-val">Sin datos (inicia sesión y abre el carro)</div></div>';
-    document.body.appendChild(fab);
-    document.body.appendChild(sheet);
-
-    fab.addEventListener('click', () => {
-      sheet.style.display = sheet.style.display === 'none' ? '' : 'none';
+  // Ajustes cambiados desde el popup del icono: aplicar en vivo
+  try {
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'local' || !changes.mdnaSettings) return;
+      const v = changes.mdnaSettings.newValue || {};
+      settings = Object.assign({}, DEFAULT_SETTINGS, v,
+        { diet: Object.assign({}, DEFAULT_SETTINGS.diet, v.diet || {}) });
+      applyAllFilters();
     });
-    document.addEventListener('click', (ev) => {
-      if (sheet.style.display !== 'none' && !sheet.contains(ev.target) && !fab.contains(ev.target)) sheet.style.display = 'none';
-    });
-    sheet.addEventListener('click', (ev) => {
-      const seg = ev.target.closest('.mdna-seg button');
-      if (seg) {
-        settings[seg.parentElement.getAttribute('data-set')] = seg.getAttribute('data-v');
-        saveSettings(); syncUi(); applyAllFilters();
-        return;
-      }
-      const al = ev.target.closest('.mdna-al');
-      if (al) {
-        const k = al.getAttribute('data-al');
-        const i = settings.allergens.indexOf(k);
-        if (i >= 0) settings.allergens.splice(i, 1); else settings.allergens.push(k);
-        saveSettings(); syncUi(); applyAllFilters();
-      }
-    });
-    sheet.addEventListener('change', (ev) => {
-      const cb = ev.target.closest('input[data-diet]');
-      if (!cb) return;
-      settings.diet[cb.getAttribute('data-diet')] = cb.checked;
-      saveSettings(); applyAllFilters();
-    });
-    syncUi();
-  }
-  function syncUi() {
-    document.querySelectorAll('.mdna-seg').forEach((seg) => {
-      const key = seg.getAttribute('data-set');
-      seg.querySelectorAll('button').forEach((b) => b.classList.toggle('on', settings[key] === b.getAttribute('data-v')));
-    });
-    document.querySelectorAll('input[data-diet]').forEach((cb) => { cb.checked = !!settings.diet[cb.getAttribute('data-diet')]; });
-    document.querySelectorAll('.mdna-al').forEach((b) => b.classList.toggle('on', settings.allergens.indexOf(b.getAttribute('data-al')) >= 0));
-  }
+  } catch (e) { /* noop */ }
 
   // ---------- mensajes del hook (mundo principal) ----------
   window.addEventListener('message', (ev) => {
@@ -614,9 +542,8 @@
       for (const k in cfg.aditivos) DB[k.toUpperCase()] = cfg.aditivos[k];
       KW = cfg.palabras_clave || {};
       ready = true;
-      buildUi();
       console.log('%c🚦 Semáforo Sano activo', 'font-weight:bold;color:#2f9e63',
-        '· ' + Object.keys(DB).length + ' aditivos cargados · almacén ' + (getWh() || 'detectando…') + ' · pulsa el botón 🍏 para filtros');
+        '· ' + Object.keys(DB).length + ' aditivos cargados · almacén ' + (getWh() || 'detectando…') + ' · filtros en el icono 🍏 de la barra de Chrome');
       const mo = new MutationObserver(scheduleScan);
       mo.observe(document.documentElement, { childList: true, subtree: true });
       scheduleScan();
