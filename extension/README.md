@@ -7,7 +7,7 @@ de riesgo y el efecto de salud** (con la fuente: EFSA, ANSES, IARC, Yuka).
 Funciona en **categorías, búsqueda** (Algolia) **y en la ficha de producto**, donde además del badge
 se muestra un panel fijo con el detalle bajo el título.
 
-Desde la 1.2.0 el tooltip añade **Nutri-Score, NOVA y nutrientes por 100 g** (vía Open Food Facts,
+Desde la 1.2.0 el tooltip añade **NOVA y nutrientes por 100 g** (vía Open Food Facts,
 con caché local de 30 días), **alérgenos declarados** y aptitud **sin gluten / sin lactosa / vegano /
 vegetariano**. El botón flotante **🍏** (abajo a la derecha) abre el panel de filtros:
 
@@ -60,7 +60,7 @@ Criterio estricto: emulgentes/espesantes procesados = riesgo elevado; gomas natu
 ## Limitaciones
 - Usa los ingredientes que expone Mercadona; algún producto nuevo puede no tenerlos (badge se omite).
 - El nivel de evidencia varía por aditivo. **Informativo, no es consejo médico.**
-- Nutri-Score/NOVA/nutrientes y vegano/vegetariano salen de **Open Food Facts** por EAN: si el
+- NOVA/nutrientes y vegano/vegetariano salen de **Open Food Facts** por EAN: si el
   producto no está en OFF, esos datos no aparecen (el semáforo de aditivos funciona igual).
 - Sin gluten / sin lactosa se deduce de las menciones obligatorias de Mercadona, de la etiqueta OFF y
   de los alérgenos declarados; ante la duda se marca `?` y **no se filtra**.

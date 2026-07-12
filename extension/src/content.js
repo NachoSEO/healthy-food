@@ -1,5 +1,5 @@
 // Content script (mundo aislado). Pinta un semáforo junto a cada producto y muestra
-// un tooltip con aditivos, riesgo, efectos, Nutri-Score/NOVA y nutrientes clave.
+// un tooltip con aditivos, riesgo, efectos, NOVA y nutrientes clave.
 // Incluye filtros de salud y dieta (panel flotante 🍏), alerta de alérgenos propios,
 // búsqueda de alternativa más sana y nota media del carro.
 (function () {
@@ -13,7 +13,6 @@
     desconocido:{ color: '#8a8a8a', order: 1, label: 'Revisar' },
   };
   const E_RE = /\bE[\s-]?(\d{3,4}[a-z]?)\b/gi;
-  const NUTRI_COLORS = { a: '#238b45', b: '#85bb2f', c: '#fecb02', d: '#ee8100', e: '#e63e11' };
 
   let DB = {};        // "E250" -> {nombre, tipo, riesgo, efectos, fuente}
   let KW = {};        // "goma guar" -> "E412"
@@ -181,8 +180,8 @@
     pumpQueue();
   }
 
-  // ---------- Open Food Facts (Nutri-Score, NOVA, nutrientes, vegano/vegetariano) ----------
-  const OFF_FIELDS = 'nutriscore_grade,nova_group,nutriments,ingredients_analysis_tags,labels_tags';
+  // ---------- Open Food Facts (NOVA, nutrientes, vegano/vegetariano) ----------
+  const OFF_FIELDS = 'nova_group,nutriments,ingredients_analysis_tags,labels_tags';
   const OFF_TTL = 30 * 24 * 3600 * 1000; // 30 días de caché persistente
   function tag3(tags, base) {
     if (!tags) return null;
@@ -206,7 +205,6 @@
             const p = data && data.status === 1 ? data.product : null;
             const nm = (p && p.nutriments) || {};
             const v = p ? {
-              nutri: p.nutriscore_grade && /^[a-e]$/.test(p.nutriscore_grade) ? p.nutriscore_grade : null,
               nova: p.nova_group || null,
               kcal: nm['energy-kcal_100g'], sugars: nm.sugars_100g,
               salt: nm.salt_100g, satfat: nm['saturated-fat_100g'],
@@ -320,7 +318,6 @@
   function chipsHtml(info) {
     const off = info.off || {};
     let h = '';
-    if (off.nutri) h += '<span class="mdna-chip" style="background:' + NUTRI_COLORS[off.nutri] + '">Nutri-Score ' + off.nutri.toUpperCase() + '</span>';
     if (off.nova) h += '<span class="mdna-chip mdna-chip-nova">NOVA ' + off.nova + '</span>';
     const parts = [];
     if (fmt1(off.kcal)) parts.push(fmt1(off.kcal) + ' kcal');
