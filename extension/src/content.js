@@ -69,36 +69,91 @@
   let sniffedWh = null; // almacén detectado de las peticiones de la propia web (fiable)
   function getWh() {
     if (sniffedWh) return sniffedWh;
-    try { const w = JSON.parse(localStorage.getItem('__mo_da') || '{}').warehouse; if (w) return w; }
+    try { const w = JSON.parse(localStorage.getItem('__mo_da') || '{}').warehouse; if (w) return (sniffedWh = w); }
     catch (e) { /* noop */ }
-    return null; // aún no conocido: no pedimos fichas hasta saberlo (evita 404 con almacén erróneo)
+    try {
+      // Fallback: buscar el wh en las peticiones que la página ya hizo
+      // (API con ?wh=, índice de Algolia o centerCode de featureflags)
+      const res = performance.getEntriesByType('resource');
+      for (let i = res.length - 1; i >= 0; i--) {
+        const m = /[?&]wh=([a-z0-9]+)/i.exec(res[i].name)
+          || /\/indexes\/products_prod_([a-z0-9]+)_/i.exec(res[i].name)
+          || /[?&]properties(?:%5B|\[)centerCode(?:%5D|\])=([a-z0-9]+)/i.exec(res[i].name);
+        if (m) return (sniffedWh = m[1]);
+      }
+    } catch (e) { /* noop */ }
+    return null; // sin wh la API suele responder igualmente; getDetail lo maneja
+  }
+
+  // Cola con concurrencia limitada: la API de Mercadona devuelve 403 ante ráfagas
+  // (una búsqueda puede pintar 120 tarjetas a la vez). En 403 se reintenta con calma.
+  const fetchQueue = [];
+  let inFlight = 0;
+  function queuedFetch(url, tries) {
+    return new Promise((resolve) => {
+      fetchQueue.push({ url: url, resolve: resolve, tries: tries || 0 });
+      pumpQueue();
+    });
+  }
+  function pumpQueue() {
+    if (inFlight >= 4 || fetchQueue.length === 0) return;
+    const job = fetchQueue.shift();
+    inFlight++;
+    fetch(job.url, { credentials: 'include' })
+      .then((r) => {
+        if (r.status === 403 && job.tries < 2) {
+          setTimeout(() => {
+            fetchQueue.push({ url: job.url, resolve: job.resolve, tries: job.tries + 1 });
+            pumpQueue();
+          }, 2000 * (job.tries + 1));
+        } else job.resolve(r);
+      })
+      .catch(() => job.resolve(null))
+      .finally(() => { inFlight--; setTimeout(pumpQueue, 120); });
+    pumpQueue();
   }
 
   function getDetail(id) {
     if (detailCache.has(id)) return detailCache.get(id);
-    const pr = fetch('/api/products/' + id + '/?lang=es&wh=' + getWh(), { credentials: 'include' })
-      .then((r) => (r.ok ? r.json() : null))
+    const wh = getWh();
+    // Con wh si se conoce; si falla (o no hay wh), la API responde también sin él
+    const pr = queuedFetch('/api/products/' + id + '/?lang=es' + (wh ? '&wh=' + wh : ''))
+      .then((r) => {
+        if (r && r.ok) return r.json();
+        // 404 = producto no disponible en ese almacén: probar sin wh (403 no; es rate limit)
+        if (!r || r.status !== 404 || !wh) return null;
+        return queuedFetch('/api/products/' + id + '/?lang=es')
+          .then((r2) => (r2 && r2.ok ? r2.json() : null));
+      })
       .then((d) => {
-        if (!d) return null;
+        if (!d) { detailCache.delete(id); return null; } // no cachear fallos: permite reintentar
         const ni = d.nutrition_information || {};
         const ing = strip(ni.ingredients);
         const c = classify(ing);
         return { ingredients: ing, additives: c.additives, color: c.color, label: c.label };
       })
-      .catch(() => null);
+      .catch(() => { detailCache.delete(id); return null; });
     detailCache.set(id, pr);
     return pr;
   }
 
   // ---------- tooltip ----------
-  let tip;
+  let tip, hideTimer = null;
   function tooltip() {
     if (tip) return tip;
     tip = document.createElement('div');
     tip.className = 'mdna-tip';
     tip.style.display = 'none';
+    // El tooltip es interactivo (se puede hacer scroll dentro si no cabe entero)
+    tip.addEventListener('mouseenter', cancelHide);
+    tip.addEventListener('mouseleave', scheduleHide);
     document.body.appendChild(tip);
     return tip;
+  }
+  function cancelHide() { if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; } }
+  function scheduleHide() {
+    cancelHide();
+    hideTimer = setTimeout(() => { hideTimer = null; if (tip) tip.style.display = 'none'; }, 160);
   }
   function tipHtml(info) {
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -123,19 +178,34 @@
   }
   function showTip(badge) {
     if (!badge._info) return;
+    cancelHide();
     const t = tooltip();
     t.innerHTML = tipHtml(badge._info);
-    t.style.display = 'block';
-    const r = badge.getBoundingClientRect();
-    const tw = Math.min(340, window.innerWidth - 20);
+    const MARGIN = 10, GAP = 6;
+    const tw = Math.min(340, window.innerWidth - 2 * MARGIN);
     t.style.width = tw + 'px';
-    let left = r.left + window.scrollX;
-    if (left + tw > window.scrollX + window.innerWidth - 10) left = window.scrollX + window.innerWidth - tw - 10;
-    let top = r.bottom + window.scrollY + 6;
-    t.style.left = Math.max(8, left) + 'px';
-    t.style.top = top + 'px';
+    t.style.maxHeight = '';
+    t.style.visibility = 'hidden';
+    t.style.display = 'block';
+    // Posición fija respecto al viewport: debajo del badge si cabe, si no encima,
+    // y si no cabe entero en ninguno de los dos lados, se limita la altura (scroll interno).
+    const r = badge.getBoundingClientRect();
+    const below = window.innerHeight - r.bottom - GAP - MARGIN;
+    const above = r.top - GAP - MARGIN;
+    let top;
+    if (t.offsetHeight <= below) {
+      top = r.bottom + GAP;
+    } else if (t.offsetHeight <= above) {
+      top = r.top - GAP - t.offsetHeight;
+    } else {
+      t.style.maxHeight = Math.max(120, Math.max(below, above)) + 'px';
+      top = below >= above ? r.bottom + GAP : r.top - GAP - t.offsetHeight;
+    }
+    const left = Math.min(r.left, window.innerWidth - MARGIN - tw);
+    t.style.left = Math.max(MARGIN, left) + 'px';
+    t.style.top = Math.max(MARGIN, top) + 'px';
+    t.style.visibility = '';
   }
-  function hideTip() { if (tip) tip.style.display = 'none'; }
 
   // ---------- badges ----------
   function makeBadge() {
@@ -143,7 +213,7 @@
     b.className = 'mdna-badge mdna-loading';
     b.textContent = '';
     b.addEventListener('mouseenter', () => showTip(b));
-    b.addEventListener('mouseleave', hideTip);
+    b.addEventListener('mouseleave', scheduleHide);
     return b;
   }
   function applyBadge(badge, info) {
@@ -151,6 +221,20 @@
     badge.style.background = info.color;
     badge._info = info;
   }
+
+  // Carga perezosa: solo se piden las fichas de las tarjetas visibles (o casi).
+  // Evita ráfagas de 100+ peticiones en búsquedas/categorías, que la API corta con 403.
+  const lazyObserver = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      lazyObserver.unobserve(en.target);
+      const badge = en.target;
+      getDetail(badge._mdnaId).then((info) => {
+        if (info) { applyBadge(badge, info); marked++; logStatus(); }
+        else badge.remove();
+      });
+    });
+  }, { rootMargin: '300px' });
 
   function resolveId(nameEl) {
     const card = nameEl.closest('button') || nameEl.closest('[class*="product-cell"]') || nameEl.parentElement;
@@ -166,12 +250,10 @@
       if (!id) return; // aún no tenemos el id (el hook no lo ha visto); se reintenta al llegar más datos
       el.setAttribute('data-mdna', '1');
       const badge = makeBadge();
+      badge._mdnaId = id;
       el.insertAdjacentElement('afterbegin', badge);
       el.insertBefore(document.createTextNode(' '), badge.nextSibling);
-      getDetail(id).then((info) => {
-        if (info) { applyBadge(badge, info); marked++; logStatus(); }
-        else badge.remove();
-      });
+      lazyObserver.observe(badge);
     });
   }
 
@@ -180,19 +262,32 @@
     if (!m) return;
     const id = m[1];
     const h1 = document.querySelector('h1');
-    if (!h1 || h1.querySelector('.mdna-badge') || h1.hasAttribute('data-mdna')) return;
-    h1.setAttribute('data-mdna', '1');
+    // data-mdna guarda el id: si la SPA reutiliza el h1 para otro producto, se repinta
+    if (!h1 || h1.getAttribute('data-mdna') === id) return;
+    h1.setAttribute('data-mdna', id);
+    const stale = h1.querySelector('.mdna-badge'); if (stale) stale.remove();
+    document.querySelectorAll('.mdna-panel').forEach((p) => p.remove());
     const badge = makeBadge();
     badge.classList.add('mdna-badge-lg');
     h1.insertAdjacentElement('afterbegin', badge);
     h1.insertBefore(document.createTextNode(' '), badge.nextSibling);
-    getDetail(id).then((info) => { if (info) applyBadge(badge, info); else badge.remove(); });
+    getDetail(id).then((info) => {
+      if (!info) { badge.remove(); return; }
+      applyBadge(badge, info);
+      // En la ficha hay espacio: panel siempre visible bajo el título, sin depender del hover
+      if (h1.getAttribute('data-mdna') !== id || document.querySelector('.mdna-panel')) return;
+      const panel = document.createElement('div');
+      panel.className = 'mdna-panel';
+      panel.innerHTML = tipHtml(info);
+      h1.insertAdjacentElement('afterend', panel);
+      marked++; logStatus();
+    });
   }
 
   let scanTimer = null;
   function scheduleScan() {
     if (scanTimer) return;
-    scanTimer = setTimeout(() => { scanTimer = null; if (ready && getWh()) { scanCards(); scanDetailPage(); } }, 120);
+    scanTimer = setTimeout(() => { scanTimer = null; if (ready) { scanCards(); scanDetailPage(); } }, 120);
   }
 
   // ---------- mensajes del hook (mundo principal) ----------
@@ -207,6 +302,10 @@
     }
     scheduleScan();
   });
+
+  // Saluda al hook (mundo principal) para que reenvíe el wh y los productos que
+  // capturó antes de que este script estuviera escuchando (p. ej. carga directa de una ficha).
+  window.postMessage({ __mdnaSemHello: 1 }, '*');
 
   // ---------- init ----------
   fetch(chrome.runtime.getURL('data/aditivos.json'))
